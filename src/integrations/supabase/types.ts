@@ -626,6 +626,43 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_adjust_points: {
+        Args: { _amount: number; _reason: string; _target: string }
+        Returns: Json
+      }
+      admin_search_users: {
+        Args: { _limit?: number; _q?: string }
+        Returns: Json
+      }
+      admin_set_status: {
+        Args: { _reason: string; _status: string; _target: string }
+        Returns: undefined
+      }
+      admin_stats: { Args: never; Returns: Json }
+      apply_referral: { Args: { _code: string }; Returns: Json }
+      award_achievement: {
+        Args: { _code: string; _user: string }
+        Returns: undefined
+      }
+      claim_mission: { Args: { _mission_id: string }; Returns: Json }
+      complete_earning_session: { Args: never; Returns: Json }
+      credit_points: {
+        Args: {
+          _amount: number
+          _desc: string
+          _idem: string
+          _meta?: Json
+          _ref: string
+          _type: string
+          _user: string
+        }
+        Returns: string
+      }
+      get_leaderboard: {
+        Args: { _limit?: number; _offset?: number; _period?: string }
+        Returns: Json
+      }
+      get_setting: { Args: { _key: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -633,6 +670,34 @@ export type Database = {
         }
         Returns: boolean
       }
+      mission_state: { Args: never; Returns: Json }
+      my_rank: { Args: never; Returns: number }
+      notify: {
+        Args: { _body: string; _kind: string; _title: string; _user: string }
+        Returns: undefined
+      }
+      start_earning_session: {
+        Args: never
+        Returns: {
+          base_rate: number
+          created_at: string
+          ended_at: string | null
+          expected_end_at: string
+          id: string
+          multiplier: number
+          points_accrued: number
+          started_at: string
+          status: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "earning_sessions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      streak_multiplier: { Args: { _streak: number }; Returns: number }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
