@@ -1,6 +1,6 @@
-import { db } from "./client";
+import { db, unwrap } from "./client";
 
-export type LeaderboardPeriod = "ALL" | "WEEKLY" | "MONTHLY";
+export type LeaderboardPeriod = "ALL_TIME" | "WEEKLY" | "MONTHLY";
 
 export interface LeaderboardRow {
   rank: number;
@@ -13,13 +13,11 @@ export interface LeaderboardRow {
 }
 
 export const leaderboardService = {
-  async get(period: LeaderboardPeriod, page = 0, pageSize = 25): Promise<LeaderboardRow[]> {
-    const { data, error } = await db.rpc("get_leaderboard", {
-      _period: period,
-      _limit: pageSize,
-      _offset: page * pageSize,
-    });
-    if (error) throw new Error(error.message);
-    return (data ?? []) as LeaderboardRow[];
+  async get(period: LeaderboardPeriod, limit = 50, offset = 0): Promise<LeaderboardRow[]> {
+    return (
+      unwrap<LeaderboardRow[]>(
+        await db.rpc("get_leaderboard", { _period: period, _limit: limit, _offset: offset }),
+      ) ?? []
+    );
   },
 };

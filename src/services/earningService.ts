@@ -6,7 +6,7 @@ export interface EarningSession {
   started_at: string;
   expected_end_at: string;
   ended_at: string | null;
-  status: "ACTIVE" | "COMPLETED" | "CANCELLED";
+  status: string;
   base_rate: number;
   multiplier: number;
   points_accrued: number;
@@ -20,31 +20,35 @@ export interface SessionResult {
 }
 
 export const earningService = {
-  async getActiveSession(): Promise<EarningSession | null> {
+  async active(): Promise<EarningSession | null> {
     const { data, error } = await db
       .from("earning_sessions")
       .select("*")
       .eq("status", "ACTIVE")
+      .order("started_at", { ascending: false })
+      .limit(1)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return data;
+    return (data as EarningSession) ?? null;
   },
 
-  async getRecentSessions(limit = 10): Promise<EarningSession[]> {
-    const { data, error } = await db
-      .from("earning_sessions")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(limit);
-    if (error) throw new Error(error.message);
-    return data ?? [];
+  async recent(limit = 10): Promise<EarningSession[]> {
+    return (
+      unwrap<EarningSession[]>(
+        await db
+          .from("earning_sessions")
+          .select("*")
+          .order("started_at", { ascending: false })
+          .limit(limit),
+      ) ?? []
+    );
   },
 
   async start(): Promise<EarningSession> {
-    return unwrap(await db.rpc("start_earning_session"));
+    return unwrap<EarningSession>(await db.rpc("start_earning_session"));
   },
 
   async complete(): Promise<SessionResult> {
-    return unwrap(await db.rpc("complete_earning_session"));
+    return unwrap<SessionResult>(await db.rpc("complete_earning_session"));
   },
 };
