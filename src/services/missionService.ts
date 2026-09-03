@@ -14,9 +14,7 @@ export interface MissionState {
 
 export const missionService = {
   async list(): Promise<MissionState[]> {
-    const { data, error } = await db.rpc("mission_state");
-    if (error) throw new Error(error.message);
-    return (data ?? []) as MissionState[];
+    return unwrap<MissionState[]>(await db.rpc("mission_state")) ?? [];
   },
 
   async claim(missionId: string): Promise<{ reward: number; balance: number }> {
