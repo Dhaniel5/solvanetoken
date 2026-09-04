@@ -13,31 +13,24 @@ export interface EconomySetting {
 }
 
 export const configService = {
-  async flags(): Promise<Record<string, boolean>> {
-    const { data, error } = await db.from("feature_flags").select("key, enabled");
-    if (error) throw new Error(error.message);
-    return Object.fromEntries((data ?? []).map((f: FeatureFlag) => [f.key, f.enabled]));
+  async flagRows(): Promise<FeatureFlag[]> {
+    return unwrap<FeatureFlag[]>(await db.from("feature_flags").select("*").order("key")) ?? [];
   },
 
-  async flagRows(): Promise<FeatureFlag[]> {
-    const { data, error } = await db.from("feature_flags").select("*").order("key");
-    if (error) throw new Error(error.message);
-    return data ?? [];
+  async flags(): Promise<Record<string, boolean>> {
+    const rows = await configService.flagRows();
+    return Object.fromEntries(rows.map((row) => [row.key, row.enabled]));
   },
 
   async setFlag(key: string, enabled: boolean) {
-    return unwrap(await db.from("feature_flags").update({ enabled }).eq("key", key).select().single());
+    return unwrap(await db.from("feature_flags").update({ enabled }).eq("key", key));
   },
 
   async settings(): Promise<EconomySetting[]> {
-    const { data, error } = await db.from("economy_settings").select("*").order("key");
-    if (error) throw new Error(error.message);
-    return data ?? [];
+    return unwrap<EconomySetting[]>(await db.from("economy_settings").select("*").order("key")) ?? [];
   },
 
   async setSetting(key: string, value: unknown) {
-    return unwrap(
-      await db.from("economy_settings").update({ value, updated_at: new Date().toISOString() }).eq("key", key).select().single(),
-    );
+    return unwrap(await db.from("economy_settings").update({ value }).eq("key", key));
   },
 };

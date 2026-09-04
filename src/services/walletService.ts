@@ -1,6 +1,6 @@
-import { db } from "./client";
+import { db, unwrap } from "./client";
 
-export interface UserWallet {
+export interface Wallet {
   id: string;
   blockchain: string;
   wallet_address: string;
@@ -9,14 +9,9 @@ export interface UserWallet {
   primary_wallet: boolean;
 }
 
-/**
- * Wallet connection is intentionally disabled for the MVP (WALLET_ENABLED
- * feature flag). The structure exists so Solana wallets can be added later.
- */
+/** Wallet linking is disabled for the MVP — read-only placeholder. */
 export const walletService = {
-  async list(): Promise<UserWallet[]> {
-    const { data, error } = await db.from("user_wallets").select("*");
-    if (error) throw new Error(error.message);
-    return data ?? [];
+  async list(): Promise<Wallet[]> {
+    return unwrap<Wallet[]>(await db.from("user_wallets").select("*")) ?? [];
   },
 };
