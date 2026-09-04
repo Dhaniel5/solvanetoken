@@ -1,4 +1,4 @@
-import { db } from "./client";
+import { db, unwrap } from "./client";
 
 export interface Notification {
   id: string;
@@ -11,16 +11,20 @@ export interface Notification {
 
 export const notificationService = {
   async list(limit = 30): Promise<Notification[]> {
-    const { data, error } = await db
-      .from("notifications")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(limit);
-    if (error) throw new Error(error.message);
-    return data ?? [];
+    return (
+      unwrap<Notification[]>(
+        await db
+          .from("notifications")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(limit),
+      ) ?? []
+    );
   },
 
-  async markAllRead() {
-    await db.from("notifications").update({ read: true }).eq("read", false);
+  async markAllRead(userId: string) {
+    return unwrap(
+      await db.from("notifications").update({ read: true }).eq("user_id", userId).eq("read", false),
+    );
   },
 };
