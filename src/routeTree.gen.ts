@@ -10,14 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as EarnRouteImport } from './routes/earn'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as MissionsRouteImport } from './routes/missions'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReferralsRouteImport } from './routes/referrals'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EarnRoute = EarnRouteImport.update({
@@ -35,6 +43,16 @@ const MissionsRoute = MissionsRouteImport.update({
   path: '/missions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReferralsRoute = ReferralsRouteImport.update({
   id: '/referrals',
   path: '/referrals',
@@ -43,39 +61,76 @@ const ReferralsRoute = ReferralsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/earn': typeof EarnRoute
   '/leaderboard': typeof LeaderboardRoute
   '/missions': typeof MissionsRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/earn': typeof EarnRoute
   '/leaderboard': typeof LeaderboardRoute
   '/missions': typeof MissionsRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/earn': typeof EarnRoute
   '/leaderboard': typeof LeaderboardRoute
   '/missions': typeof MissionsRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
   '/referrals': typeof ReferralsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/earn' | '/leaderboard' | '/missions' | '/referrals'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/earn'
+    | '/leaderboard'
+    | '/missions'
+    | '/notifications'
+    | '/profile'
+    | '/referrals'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/earn' | '/leaderboard' | '/missions' | '/referrals'
-  id: '__root__' | '/' | '/earn' | '/leaderboard' | '/missions' | '/referrals'
+  to:
+    | '/'
+    | '/admin'
+    | '/earn'
+    | '/leaderboard'
+    | '/missions'
+    | '/notifications'
+    | '/profile'
+    | '/referrals'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/earn'
+    | '/leaderboard'
+    | '/missions'
+    | '/notifications'
+    | '/profile'
+    | '/referrals'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   EarnRoute: typeof EarnRoute
   LeaderboardRoute: typeof LeaderboardRoute
   MissionsRoute: typeof MissionsRoute
+  NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
   ReferralsRoute: typeof ReferralsRoute
 }
 
@@ -86,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/earn': {
@@ -109,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/referrals': {
       id: '/referrals'
       path: '/referrals'
@@ -121,9 +197,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   EarnRoute: EarnRoute,
   LeaderboardRoute: LeaderboardRoute,
   MissionsRoute: MissionsRoute,
+  NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
   ReferralsRoute: ReferralsRoute,
 }
 export const routeTree = rootRouteImport
