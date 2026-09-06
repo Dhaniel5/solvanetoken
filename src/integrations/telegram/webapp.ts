@@ -40,6 +40,8 @@ declare global {
   }
 }
 
+const SCRIPT_SRC = "https://telegram.org/js/telegram-web-app.js";
+
 export function tg(): TelegramWebApp | undefined {
   if (typeof window === "undefined") return undefined;
   return window.Telegram?.WebApp;
@@ -48,6 +50,21 @@ export function tg(): TelegramWebApp | undefined {
 export function isTelegram(): boolean {
   const app = tg();
   return Boolean(app && app.initData && app.initData.length > 0);
+}
+
+export function loadTelegramScript(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (window.Telegram?.WebApp) return Promise.resolve();
+  const existing = document.querySelector(`script[src="${SCRIPT_SRC}"]`);
+  if (existing) return Promise.resolve();
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = SCRIPT_SRC;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => resolve();
+    document.head.appendChild(script);
+  });
 }
 
 export function initTelegram() {
