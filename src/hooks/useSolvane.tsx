@@ -58,6 +58,7 @@ export function SolvaneProvider({ children }: { children: ReactNode }) {
       setStatus("loading");
       setError(null);
       try {
+        await loadTelegramScript();
         initTelegram();
         const telegram = isTelegram();
         if (!cancelled) setInTelegram(telegram);
