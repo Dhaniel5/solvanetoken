@@ -3,7 +3,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
 import { telegramSignIn, devSignIn } from "@/lib/auth.functions";
-import { getInitData, getStartParam, initTelegram, isTelegram } from "@/integrations/telegram/webapp";
+import {
+  getInitData,
+  getStartParam,
+  initTelegram,
+  isTelegram,
+  loadTelegramScript,
+} from "@/integrations/telegram/webapp";
 import { userService, type Profile } from "@/services/userService";
 import { configService } from "@/services/configService";
 import { referralService } from "@/services/referralService";
