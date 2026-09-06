@@ -32,7 +32,11 @@ function ProfilePage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState<string | null>(null);
 
-  const levels = useQuery({ queryKey: ["levels"], queryFn: () => levelService.list() });
+  const levels = useQuery({
+    queryKey: ["levels"],
+    queryFn: () => levelService.list(),
+    enabled: Boolean(userId),
+  });
   const achievements = useQuery({
     queryKey: ["achievements", userId],
     queryFn: () => achievementService.list(),

@@ -32,7 +32,11 @@ export const Route = createFileRoute("/")({
 function Dashboard() {
   const { profile, userId } = useSolvane();
 
-  const levels = useQuery({ queryKey: ["levels"], queryFn: () => levelService.list() });
+  const levels = useQuery({
+    queryKey: ["levels"],
+    queryFn: () => levelService.list(),
+    enabled: Boolean(userId),
+  });
   const ledger = useQuery({
     queryKey: ["ledger", userId],
     queryFn: () => pointsService.ledger(6),
