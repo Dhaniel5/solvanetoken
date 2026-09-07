@@ -152,7 +152,7 @@ async function signInAsTelegramUser(user: TelegramUser, isTest: boolean): Promis
 }
 
 export const telegramSignIn = createServerFn({ method: "POST" })
-  .inputValidator((input: { initData: string }) => {
+  .validator((input: { initData: string }) => {
     if (!input?.initData || typeof input.initData !== "string" || input.initData.length > 8192) {
       throw new Error("INVALID_INIT_DATA");
     }
