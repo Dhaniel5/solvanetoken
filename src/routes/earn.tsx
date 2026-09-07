@@ -88,7 +88,15 @@ function EarnPage() {
 
   const earningEnabled = flags["EARNING_ENABLED"] !== false;
   const active = session.data;
-  const finished = active && remaining === 0;
+  const finished = active ? remaining === 0 : false;
+
+  const accrued = (() => {
+    if (!active) return 0;
+    const start = new Date(active.started_at).getTime();
+    const end = new Date(active.expected_end_at).getTime();
+    const elapsed = Math.max(0, Math.min(Date.now(), end) - start) / 3_600_000;
+    return Math.floor(Number(active.base_rate) * Number(active.multiplier) * elapsed);
+  })();
 
   return (
     <AppShell title="Earn">
@@ -114,21 +122,33 @@ function EarnPage() {
           {active ? (
             <>
               <p className="text-xs tracking-widest text-muted-foreground uppercase">
-                {finished ? "Ready to claim" : "Time remaining"}
+                {finished ? "Session complete" : "Time remaining"}
               </p>
               <p className="font-display mt-2 text-4xl font-semibold text-foreground">
                 {formatDuration(remaining ?? 0)}
               </p>
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className="mt-3 text-sm font-semibold text-success">
+                {accrued.toLocaleString()} SVP earned so far
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 {Number(active.base_rate)} SVP/hour × {Number(active.multiplier).toFixed(2)} multiplier
               </p>
               <button
-                disabled={!finished || complete.isPending}
+                disabled={complete.isPending}
                 onClick={() => complete.mutate()}
                 className="bg-brand mt-6 w-full rounded-2xl py-4 text-sm font-semibold text-primary-foreground disabled:opacity-50"
               >
-                {complete.isPending ? "Claiming…" : finished ? "Claim rewards" : "Session in progress"}
+                {complete.isPending
+                  ? "Claiming…"
+                  : finished
+                    ? "Claim rewards"
+                    : `Claim ${accrued.toLocaleString()} SVP now`}
               </button>
+              {!finished && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Claim any time — or wait for the full session to earn the maximum.
+                </p>
+              )}
             </>
           ) : (
             <>
@@ -144,6 +164,7 @@ function EarnPage() {
           )}
         </section>
       )}
+
 
       <section className="mt-6">
         <h2 className="font-display mb-3 text-sm font-semibold text-foreground">Session history</h2>
