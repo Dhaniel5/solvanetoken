@@ -168,7 +168,7 @@ export const telegramSignIn = createServerFn({ method: "POST" })
  * always creates clearly-flagged test accounts, never Telegram identities.
  */
 export const devSignIn = createServerFn({ method: "POST" })
-  .inputValidator((input: { deviceKey: string }) => {
+  .validator((input: { deviceKey: string }) => {
     if (!input?.deviceKey || input.deviceKey.length < 8 || input.deviceKey.length > 128) {
       throw new Error("INVALID_DEVICE_KEY");
     }
