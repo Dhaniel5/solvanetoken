@@ -152,7 +152,7 @@ async function signInAsTelegramUser(user: TelegramUser, isTest: boolean): Promis
 }
 
 export const telegramSignIn = createServerFn({ method: "POST" })
-  .inputValidator((input: { initData: string }) => {
+  .validator((input: { initData: string }) => {
     if (!input?.initData || typeof input.initData !== "string" || input.initData.length > 8192) {
       throw new Error("INVALID_INIT_DATA");
     }
@@ -168,7 +168,7 @@ export const telegramSignIn = createServerFn({ method: "POST" })
  * always creates clearly-flagged test accounts, never Telegram identities.
  */
 export const devSignIn = createServerFn({ method: "POST" })
-  .inputValidator((input: { deviceKey: string }) => {
+  .validator((input: { deviceKey: string }) => {
     if (!input?.deviceKey || input.deviceKey.length < 8 || input.deviceKey.length > 128) {
       throw new Error("INVALID_DEVICE_KEY");
     }
