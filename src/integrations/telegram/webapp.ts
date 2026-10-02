@@ -118,7 +118,9 @@ export function useBackButtonBinding(visible: boolean, onClick: () => void) {
 }
 
 export function referralLink(code: string) {
-  return `https://t.me/${BOT_USERNAME}/${MINI_APP_NAME}?startapp=${encodeURIComponent(code)}`;
+  // Uses the bot's main Mini App, which opens directly with the start parameter.
+  void MINI_APP_NAME;
+  return `https://t.me/${BOT_USERNAME}?startapp=${encodeURIComponent(code)}`;
 }
 
 export function shareReferral(code: string) {
