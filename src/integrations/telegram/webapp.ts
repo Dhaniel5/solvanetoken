@@ -94,12 +94,22 @@ export function getStartParam(): string | null {
   return url.searchParams.get("startapp") ?? url.searchParams.get("ref");
 }
 
+// Haptics are best-effort: some Telegram versions throw on unsupported
+// methods, and an exception here would cancel the tap (e.g. navigation).
 export function haptic(style: HapticStyle = "light") {
-  tg()?.HapticFeedback?.impactOccurred(style);
+  try {
+    tg()?.HapticFeedback?.impactOccurred(style);
+  } catch {
+    /* unsupported */
+  }
 }
 
 export function hapticNotify(type: NotificationType) {
-  tg()?.HapticFeedback?.notificationOccurred(type);
+  try {
+    tg()?.HapticFeedback?.notificationOccurred(type);
+  } catch {
+    /* unsupported */
+  }
 }
 
 export function useBackButtonBinding(visible: boolean, onClick: () => void) {
